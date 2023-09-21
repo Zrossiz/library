@@ -1,4 +1,4 @@
-const UserSchema = {
+const BookSchema = {
   id: string,
   title: string,
   description: string,
