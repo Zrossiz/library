@@ -21,6 +21,7 @@ export const create = async (req, res) => {
       favorite: req.body.favorite,
       fileCover: req.body.fileCover,
       fileName: req.body.fileName,
+      fileBook: req.body.fileBook,
     });
 
     const book = await doc.save();
@@ -120,6 +121,34 @@ export const update = async (req, res) => {
   } catch (err) {
     res.status(500).json({
       message: "Ошибка при обновлении книги",
+    });
+  }
+};
+
+export const download = async (req, res) => {
+  try {
+    const bookId = req.params.id;
+    const book = await BookModel.findOne({
+      _id: bookId,
+    }).then((doc, err) => {
+      if (err) {
+        console.log(err);
+        res.status(404).json({
+          message: "Не удалось скачать книгу",
+        });
+        return;
+      }
+
+      if (!doc) {
+        return res.status(404).json({
+          message: "Не удалось найти книгу",
+        });
+      }
+      res.download(`./upload/${doc.fileBook}`);
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: "Ошибка при скачивании книги",
     });
   }
 };

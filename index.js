@@ -4,13 +4,9 @@ import cors from "cors";
 import mongoose from "mongoose";
 import multer from "multer";
 
-import {
-  create,
-  getAll,
-  getOne,
-  remove,
-  update,
-} from "./controllers/BookController.js";
+import router from "./routes/index.js";
+import logger from "./middleware/logger.js";
+import error404 from "./middleware/404.js";
 
 dotenv.config();
 const PORT = process.env.PORT;
@@ -28,10 +24,10 @@ mongoose
 const app = express();
 
 const storage = multer.diskStorage({
-  destination: (_, __, cb) => {
+  destination: (req, file, cb) => {
     cb(null, "upload");
   },
-  filename: (_, file, cb) => {
+  filename: (req, file, cb) => {
     cb(null, file.originalname);
   },
 });
@@ -40,21 +36,8 @@ const upload = multer({ storage });
 
 app.use(express.json());
 app.use(cors());
+app.use("/api", router);
 app.use("/upload", express.static("upload"));
-
-app.post("/api/user/login", async (req, res) => {
-  res.status(201).json({ id: 1, mail: "test@mail.ru" });
-});
-
-app.get("/api/books", getAll);
-
-app.get("/api/books/:id", getOne);
-
-app.post("/api/books", create);
-
-app.put("/api/books/:id", update);
-
-app.delete("/api/books/:id", remove);
 
 app.listen(PORT, (err) => {
   if (err) {
