@@ -1,58 +1,60 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+import mongoose from "mongoose";
+import multer from "multer";
+
+import {
+  create,
+  getAll,
+  getOne,
+  remove,
+  update,
+} from "./controllers/BookController.js";
 
 dotenv.config();
 const PORT = process.env.PORT;
+const DB_CONNECT = process.env.DB_CONNECT;
+
+mongoose
+  .connect(DB_CONNECT)
+  .then(() => {
+    console.log("DB started");
+  })
+  .catch((err) => {
+    console.log("DB crashed", err);
+  });
 
 const app = express();
 
+const storage = multer.diskStorage({
+  destination: (_, __, cb) => {
+    cb(null, "upload");
+  },
+  filename: (_, file, cb) => {
+    cb(null, file.originalname);
+  },
+});
+
+const upload = multer({ storage });
+
 app.use(express.json());
 app.use(cors());
+app.use("/upload", express.static("upload"));
 
 app.post("/api/user/login", async (req, res) => {
   res.status(201).json({ id: 1, mail: "test@mail.ru" });
 });
 
-app.get("/api/books", async (req, res) => {
-  res.status(200).json({
-    message: "Get all books - success",
-  });
-});
+app.get("/api/books", getAll);
 
-app.get("/api/books/:id", async (req, res) => {
-  const bookId = req.params.id;
+app.get("/api/books/:id", getOne);
 
-  if (!bookId) {
-    return res.status(404).json({
-      message: "Wrong name of book",
-    });
-  }
+app.post("/api/books", create);
 
-  res.status(200).json({
-    BookId: bookId,
-  });
-});
+app.put("/api/books/:id", update);
 
-app.post("/api/books", async (req, res) => {
-  res.status(200).json({ success: true });
-});
-
-app.put("/api/books/:id", async (req, res) => {
-  const bookId = req.params.id;
-
-  res.status(200).json({
-    message: bookId,
-  });
-});
-
-app.delete("/api/books/:id", (req, res) => {
-  const bookId = req.params.id;
-
-  res.status(200).json({
-    message: bookId,
-  });
-});
+app.delete("/api/books/:id", remove);
 
 app.listen(PORT, (err) => {
   if (err) {
