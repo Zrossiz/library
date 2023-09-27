@@ -2,11 +2,8 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import mongoose from "mongoose";
-import multer from "multer";
 
 import router from "./routes/index.js";
-import logger from "./middleware/logger.js";
-import error404 from "./middleware/404.js";
 
 dotenv.config();
 const PORT = process.env.PORT;
@@ -22,17 +19,6 @@ mongoose
   });
 
 const app = express();
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "upload");
-  },
-  filename: (req, file, cb) => {
-    cb(null, file.originalname);
-  },
-});
-
-const upload = multer({ storage });
 
 app.use(express.json());
 app.use(cors());

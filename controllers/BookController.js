@@ -13,6 +13,7 @@ export const getAll = async (req, res) => {
 };
 
 export const create = async (req, res) => {
+  console.log(req.file);
   try {
     const doc = new BookModel({
       title: req.body.title,
@@ -21,7 +22,7 @@ export const create = async (req, res) => {
       favorite: req.body.favorite,
       fileCover: req.body.fileCover,
       fileName: req.body.fileName,
-      fileBook: req.body.fileBook,
+      fileBook: req.file.originalname,
     });
 
     const book = await doc.save();
