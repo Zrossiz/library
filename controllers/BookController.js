@@ -13,7 +13,7 @@ export const getAll = async (req, res) => {
 };
 
 export const create = async (req, res) => {
-  console.log(req.file);
+  console.log(req.body, req.files);
   try {
     const doc = new BookModel({
       title: req.body.title,

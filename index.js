@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import mongoose from "mongoose";
+import bodyParser from "body-parser";
 
 import router from "./routes/index.js";
 
@@ -21,6 +22,8 @@ mongoose
 const app = express();
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 app.use(cors());
 app.use("/api", router);
 app.use("/upload", express.static("upload"));
