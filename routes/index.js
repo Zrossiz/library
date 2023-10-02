@@ -22,7 +22,7 @@ router.get("/books/:id", getOne);
 
 router.post("/books", upload.single("fileBook"), create);
 
-router.put("/books/:id", update);
+router.put("/books/:id", upload.single("fileBook"), update);
 
 router.delete("/books/:id", remove);
 

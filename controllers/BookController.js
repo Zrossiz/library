@@ -13,7 +13,6 @@ export const getAll = async (req, res) => {
 };
 
 export const create = async (req, res) => {
-  console.log(req.body, req.files);
   try {
     const doc = new BookModel({
       title: req.body.title,
@@ -101,7 +100,6 @@ export const remove = async (req, res) => {
 export const update = async (req, res) => {
   try {
     const bookId = req.params.id;
-
     await BookModel.updateOne(
       {
         _id: bookId,
@@ -113,6 +111,7 @@ export const update = async (req, res) => {
         favorite: req.body.favorite,
         fileCover: req.body.fileCover,
         fileName: req.body.fileName,
+        fileBook: req.file.originalname,
       }
     );
 
