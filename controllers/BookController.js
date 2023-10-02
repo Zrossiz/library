@@ -21,7 +21,7 @@ export const create = async (req, res) => {
       favorite: req.body.favorite,
       fileCover: req.body.fileCover,
       fileName: req.body.fileName,
-      fileBook: req.file.originalname,
+      fileBook: req?.file?.originalname,
     });
 
     const book = await doc.save();
