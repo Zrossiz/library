@@ -28,6 +28,7 @@ const BookSchema = new mongoose.Schema(
     },
     fileBook: {
       type: String,
+      default: null,
     },
   },
   { timestamps: true }

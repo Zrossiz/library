@@ -111,7 +111,7 @@ export const update = async (req, res) => {
         favorite: req.body.favorite,
         fileCover: req.body.fileCover,
         fileName: req.body.fileName,
-        fileBook: req.file.originalname,
+        fileBook: req?.file?.originalname,
       }
     );
 
@@ -119,6 +119,7 @@ export const update = async (req, res) => {
       success: true,
     });
   } catch (err) {
+    console.log(err);
     res.status(500).json({
       message: "Ошибка при обновлении книги",
     });
