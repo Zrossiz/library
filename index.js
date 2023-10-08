@@ -11,7 +11,7 @@ const PORT = process.env.PORT;
 const DB_CONNECT = process.env.DB_CONNECT;
 
 mongoose
-  .connect(DB_CONNECT)
+  .connect(String(DB_CONNECT))
   .then(() => {
     console.log("DB started");
   })
