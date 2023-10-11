@@ -30,6 +30,10 @@ const BookSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
+    viewCount: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true }
 );

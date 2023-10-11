@@ -8,6 +8,7 @@ import {
   remove,
   update,
   download,
+  search,
 } from "../controllers/BookController.js";
 
 import { upload } from "../middleware/bookMulter.js";
@@ -18,11 +19,13 @@ router.post("/api/user/login", async (req, res) => {
 
 router.get("/books", getAll);
 
-router.get("/books/:id", getOne);
+router.post("/books/search", search);
 
 router.post("/books", upload.single("fileBook"), create);
 
 router.put("/books/:id", upload.single("fileBook"), update);
+
+router.get("/books/:id", getOne);
 
 router.delete("/books/:id", remove);
 
