@@ -35,6 +35,29 @@ export const create = async (req, res) => {
   }
 };
 
+export const createTwoAndMore = async (req, res) => {
+  try {
+    const books = req.body.books;
+
+    const onInsert = (err, docs) => {
+      if (err) {
+        return res.status(500).json({
+          message: "Ошибка при создании книг",
+        });
+      }
+
+      return res.status(200).json(docs);
+    };
+
+    await BookModel.collection.insertMany(books, onInsert);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: "Не удалось создать книги",
+    });
+  }
+};
+
 export const update = async (req, res) => {
   console.log(req.body);
   console.log(req.file);
@@ -185,6 +208,78 @@ export const search = async (req, res) => {
     console.log(err);
     res.status(500).json({
       message: "Ошибка сервера при поиске",
+    });
+  }
+};
+
+export const updateViewCounter = async (req, res) => {
+  try {
+    const bookId = req.params.id;
+    const book = await BookModel.findOneAndUpdate(
+      {
+        _id: bookId,
+      },
+      {
+        $inc: { viewCount: 1 },
+      },
+      {
+        returnDocument: "after",
+      }
+    ).then((doc, err) => {
+      if (err) {
+        console.log(err);
+        res.status(404).json({
+          message: "Не удалось получить книгу",
+        });
+        return;
+      }
+
+      if (!doc) {
+        return res.status(404).json({
+          message: "Не удалось найти книгу",
+        });
+      }
+
+      res.status(200).json({
+        views: doc.viewCount,
+      });
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: "Не удалось получить книгу",
+    });
+  }
+};
+
+export const getViewCounter = async (req, res) => {
+  try {
+    const bookId = req.params.id;
+    const book = await BookModel.findOne({
+      _id: bookId,
+    }).then((doc, err) => {
+      if (err) {
+        console.log(err);
+        res.status(404).json({
+          message: "Не удалось получить книгу",
+        });
+        return;
+      }
+
+      if (!doc) {
+        return res.status(404).json({
+          message: "Не удалось найти книгу",
+        });
+      }
+
+      res.status(200).json({
+        views: doc.viewCount,
+      });
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: "Не удалось получить книгу",
     });
   }
 };

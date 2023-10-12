@@ -9,6 +9,9 @@ import {
   update,
   download,
   search,
+  createTwoAndMore,
+  updateViewCounter,
+  getViewCounter,
 } from "../controllers/BookController.js";
 
 import { upload } from "../middleware/bookMulter.js";
@@ -30,5 +33,11 @@ router.get("/books/:id", getOne);
 router.delete("/books/:id", remove);
 
 router.get("/books/:id/download", download);
+
+router.post("/books/createBooks", upload.single("fileBook"), createTwoAndMore);
+
+router.post("/counter/:id/incr", updateViewCounter);
+
+router.get("/counter/:id", getViewCounter);
 
 export default router;
