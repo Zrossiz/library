@@ -26,8 +26,8 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use(bodyParser.json());
 app.use(cors());
+app.use("/upload", express.static("src/upload"));
 app.use("/api", router);
-app.use("/upload", express.static("upload"));
 
 app.listen(PORT, (err) => {
   if (err) {

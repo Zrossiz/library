@@ -1,0 +1,33 @@
+services:
+  server:
+    image: qwertyzhopa2/library:v1.0.0
+    volumes:
+      - ../server:/app
+    ports:
+      - 81:3001
+
+  counter:
+    image: node
+    working_dir: /app
+    volumes:
+      - ../counter:/app
+    ports:
+      - 80:3002
+    command: npm run start:dev
+
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+
+  mongo-express:
+    image: mongo-express:0.54.0
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/

@@ -8,7 +8,8 @@ const storage = multer.diskStorage({
     if (!file) {
       return;
     }
-    cb(null, file.originalname);
+    const fileName = `${Math.random()}${file.originalname}`;
+    cb(null, fileName);
   },
 });
 

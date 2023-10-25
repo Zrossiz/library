@@ -1,4 +1,5 @@
 import BookModel from "../models/Book.js";
+import axios from "axios";
 
 export const getAll = async (req, res) => {
   try {
@@ -54,37 +55,6 @@ export const createTwoAndMore = async (req, res) => {
     console.log(err);
     res.status(500).json({
       message: "Не удалось создать книги",
-    });
-  }
-};
-
-export const update = async (req, res) => {
-  console.log(req.body);
-  console.log(req.file);
-  try {
-    const bookId = req.params.id;
-    await BookModel.updateOne(
-      {
-        _id: bookId,
-      },
-      {
-        title: req.body?.title,
-        description: req.body?.description,
-        authors: req.body?.authors,
-        favorite: req.body?.favorite,
-        fileCover: req.body?.fileCover,
-        fileName: req.body?.fileName,
-        fileBook: req.file?.originalname,
-      }
-    );
-
-    res.status(200).json({
-      success: true,
-    });
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({
-      message: "Ошибка при обновлении книги",
     });
   }
 };
@@ -159,6 +129,46 @@ export const remove = async (req, res) => {
   }
 };
 
+export const update = async (req, res) => {
+  try {
+    const bookId = req.params.id;
+    const data = {
+      title: req.body.title,
+      description: req.body.description,
+      authors: req.body.authors,
+      favorite: req.body.favorite,
+      fileCover: req.body.fileCover,
+      fileName: req.body.fileName,
+      fileBook: req?.file?.originalname,
+    };
+
+    for (let i in data) {
+      console.log(data[i]);
+      if (data[i] === "undefined") {
+        delete data[i];
+      }
+    }
+
+    console.log(data);
+
+    await BookModel.updateOne(
+      {
+        _id: bookId,
+      },
+      data
+    );
+
+    res.status(200).json({
+      success: true,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: "Ошибка при обновлении книги",
+    });
+  }
+};
+
 export const download = async (req, res) => {
   try {
     const bookId = req.params.id;
@@ -178,7 +188,8 @@ export const download = async (req, res) => {
           message: "Не удалось найти книгу",
         });
       }
-      res.download(`./upload/${doc.fileBook}`);
+      console.log(doc.fileBook);
+      res.download(`./src/upload/${doc.fileBook}`);
     });
   } catch (err) {
     res.status(500).json({
@@ -212,74 +223,46 @@ export const search = async (req, res) => {
   }
 };
 
-export const updateViewCounter = async (req, res) => {
+export const incrBook = async (req, res) => {
   try {
     const bookId = req.params.id;
-    const book = await BookModel.findOneAndUpdate(
-      {
+    let data;
+
+    await axios
+      .post("http://localhost/incr", {
         _id: bookId,
-      },
-      {
-        $inc: { viewCount: 1 },
-      },
-      {
-        returnDocument: "after",
-      }
-    ).then((doc, err) => {
-      if (err) {
-        console.log(err);
-        res.status(404).json({
-          message: "Не удалось получить книгу",
-        });
-        return;
-      }
-
-      if (!doc) {
-        return res.status(404).json({
-          message: "Не удалось найти книгу",
-        });
-      }
-
-      res.status(200).json({
-        views: doc.viewCount,
+      })
+      .then((res) => {
+        data = res.data;
       });
-    });
+
+    res.status(200).json(data);
   } catch (err) {
     console.log(err);
     res.status(500).json({
-      message: "Не удалось получить книгу",
+      message: "Не удалось обновить количество просмотров книги",
     });
   }
 };
 
-export const getViewCounter = async (req, res) => {
+export const getViewsBook = async (req, res) => {
   try {
     const bookId = req.params.id;
-    const book = await BookModel.findOne({
-      _id: bookId,
-    }).then((doc, err) => {
-      if (err) {
-        console.log(err);
-        res.status(404).json({
-          message: "Не удалось получить книгу",
-        });
-        return;
-      }
+    let data;
 
-      if (!doc) {
-        return res.status(404).json({
-          message: "Не удалось найти книгу",
-        });
-      }
-
-      res.status(200).json({
-        views: doc.viewCount,
+    await axios
+      .get("http://localhost/getView", {
+        _id: bookId,
+      })
+      .then((res) => {
+        data = res.data;
       });
-    });
+
+    res.status(200).json(data);
   } catch (err) {
     console.log(err);
     res.status(500).json({
-      message: "Не удалось получить книгу",
+      message: "Не удалось получить количество просмотров книги",
     });
   }
 };
