@@ -200,14 +200,12 @@ export const download = async (req, res) => {
 
 export const search = async (req, res) => {
   try {
-    console.log(req.body);
-    const title = req.body.title;
-
+    const RegExpTitle = new RegExp(`${req.body.title}`, "i");
     const books = await BookModel.find({
-      title,
-    });
+      title: RegExpTitle,
+    }).exec();
 
-    if (!title || !books) {
+    if (!req.body.title || !books) {
       res.status(200).json({
         message: "Упс, ничего не найдено",
       });
