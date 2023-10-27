@@ -10,5 +10,6 @@ import {
 router.post("/registration", create);
 router.post("/login", login);
 router.put("/favorite", switchFavorite);
+router.get("/favorite");
 
 export default router;

@@ -57,7 +57,7 @@ export const login = async (req, res, next) => {
       return next(ApiError.internal("Указан неверный пароль"));
     }
     const token = generateJwt(user.id, user.userName, user.role);
-    return res.json({ token });
+    return res.json(user);
   } catch (err) {
     console.log(err);
     return next(ApiError.badRequest("Ошибка сервера"));
@@ -108,6 +108,17 @@ export const switchFavorite = async (req, res, next) => {
     res.status(200).json({
       message: "Добавлено в избранные",
     });
+  } catch (err) {
+    console.log(err);
+    return next(ApiError.badRequest("Ошибка сервера"));
+  }
+};
+
+export const getFavorites = async (req, res) => {
+  try {
+    const user = await UserModel.findOne({ userName: req.body.login });
+
+    res.status(200).json(user.favorites);
   } catch (err) {
     console.log(err);
     return next(ApiError.badRequest("Ошибка сервера"));
