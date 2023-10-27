@@ -64,7 +64,40 @@ export const login = async (req, res, next) => {
   }
 };
 
-export const check = async (req, res, next) => {
+export const check = async (req, res) => {
   const token = generateJwt(req.user.id, req.user.email, req.user.role);
   return res.json({ token });
+};
+
+export const addToFavorite = async (req, res, next) => {
+  try {
+    const user = await UserModel.findById(req.body.userId);
+    const bookId = req.body.bookId;
+
+    let isAlreadyInFavorite;
+
+    for (let i = 0; i <= user.favorites; i++) {
+      if (item === bookId) {
+        isAlreadyInFavorite = i;
+      }
+    }
+
+    if (isAlreadyFavorite) {
+      delete user.favorites[Number(isAlreadyInFavorite)];
+      res.status(200).json({
+        message: "Убрано из избранных",
+      });
+    }
+
+    user.favorites.push(bookId);
+
+    await user.save();
+
+    res.status(200).json({
+      message: "Добавлено в избранные",
+    });
+  } catch (err) {
+    console.log(err);
+    return next(ApiError.badRequest("Ошибка сервера"));
+  }
 };
