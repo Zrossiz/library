@@ -69,29 +69,41 @@ export const check = async (req, res) => {
   return res.json({ token });
 };
 
-export const addToFavorite = async (req, res, next) => {
+export const switchFavorite = async (req, res, next) => {
   try {
-    const user = await UserModel.findById(req.body.userId);
+    const user = await UserModel.findOne({ userName: req.body.login });
     const bookId = req.body.bookId;
 
     let isAlreadyInFavorite;
 
-    for (let i = 0; i <= user.favorites; i++) {
-      if (item === bookId) {
-        isAlreadyInFavorite = i;
+    for (let key in user.favorites) {
+      if (user.favorites[key] == bookId) {
+        isAlreadyInFavorite = key;
       }
     }
 
-    if (isAlreadyFavorite) {
-      delete user.favorites[Number(isAlreadyInFavorite)];
-      res.status(200).json({
+    if (isAlreadyInFavorite) {
+      delete user.favorites[isAlreadyInFavorite];
+
+      const filteredArray = user.favorites.filter(Boolean);
+
+      await UserModel.updateOne(
+        { userName: req.body.login },
+        { favorites: filteredArray }
+      );
+      return res.status(200).json({
         message: "Убрано из избранных",
       });
     }
 
     user.favorites.push(bookId);
 
-    await user.save();
+    const filteredArray = user.favorites.filter(Boolean);
+
+    await UserModel.updateOne(
+      { userName: req.body.login },
+      { favorites: filteredArray }
+    );
 
     res.status(200).json({
       message: "Добавлено в избранные",

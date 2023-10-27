@@ -1,9 +1,14 @@
 import express from "express";
 const router = express.Router();
 
-import { create, login } from "../controllers/UserController.js";
+import {
+  switchFavorite,
+  create,
+  login,
+} from "../controllers/UserController.js";
 
 router.post("/registration", create);
 router.post("/login", login);
+router.put("/favorite", switchFavorite);
 
 export default router;
